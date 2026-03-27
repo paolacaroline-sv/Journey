@@ -1,14 +1,14 @@
 using Journey.Communication.Responses;
 using Journey.Infrastructure;
 
-namespace Journey.Application.UseCases.Trips.GetById
+namespace Journey.Application.UseCases.Trips.GetTripById
 {
 
-    public class GetById
+    public class GetTripByIdUseCase
     {
         private readonly JourneyDbContext _dbContext;
-        private readonly ILogger<GetById> _logger;
-        public GetById(JourneyDbContext dbContext, ILogger<GetById> logger)
+        private readonly ILogger<GetTripByIdUseCase> _logger;
+        public GetTripByIdUseCase(JourneyDbContext dbContext, ILogger<GetTripByIdUseCase> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
