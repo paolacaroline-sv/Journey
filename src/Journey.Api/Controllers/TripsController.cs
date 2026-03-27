@@ -13,21 +13,30 @@ namespace Journey.Api.Controllers
     [Route("api/[controller]")]
     public class TripsController : ControllerBase
     {
+        private readonly RegisterTripUseCase _registerTripUseCase;
+
+        public TripsController(RegisterTripUseCase registerTripUseCase)
+        {
+            _registerTripUseCase = registerTripUseCase;
+        }
+
         [HttpPost]
-        [ProducesResponseType(201)]
         public IActionResult Register([FromBody] RequestRegisterTripJson request)
         {
-           try
-           {
-               var useCase = new RegisterTripUseCase();
-               useCase.Execute(request);
-               return Created();
-           }
-           catch (JourneyException ex)
-           {
+            try
+            {
+                var response = _registerTripUseCase.Execute(request);
+                return Created(string.Empty, response);
+            }
+            catch (JourneyException ex)
+            {
                 return BadRequest(ex.Message);
-           }
+            }
+            catch
+            {                
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
+            }
         }
-        
+
     }
 }
