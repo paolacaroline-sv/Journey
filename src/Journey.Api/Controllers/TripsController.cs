@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Journey.Communication.Requests;
 using Journey.Application.UseCases.Trips.Register;
 using Journey.Exception.ExceptionBase;
+using Journey.Application.UseCases.Trips.GetAll;
 
 namespace Journey.Api.Controllers
 {
@@ -13,11 +14,19 @@ namespace Journey.Api.Controllers
     [Route("api/[controller]")]
     public class TripsController : ControllerBase
     {
+        private readonly GetAllTripsUseCase _getAllTripsUseCase;
         private readonly RegisterTripUseCase _registerTripUseCase;
 
-        public TripsController(RegisterTripUseCase registerTripUseCase)
+        public TripsController(GetAllTripsUseCase getAllTripsUseCase, RegisterTripUseCase registerTripUseCase)
         {
+            _getAllTripsUseCase = getAllTripsUseCase;
             _registerTripUseCase = registerTripUseCase;
+        }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            return Ok(_getAllTripsUseCase.Execute());
         }
 
         [HttpPost]

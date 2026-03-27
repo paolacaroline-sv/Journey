@@ -18,18 +18,18 @@ namespace Journey.Application.UseCases.Trips.Register
             _dbContext = dbContext;
             _logger = logger;
         }
-
+        
         public ResponseShortTripJson Execute(RequestRegisterTripJson request)
         {
             Validate(request);
 
             var trip = new Trip
             {
-                Id = Guid.NewGuid(),
                 Name = request.Name,
                 StartDate = request.StartDate,
                 EndDate = request.EndDate
             };
+
             try
             {
                 _dbContext.Trips.Add(trip);
@@ -44,11 +44,11 @@ namespace Journey.Application.UseCases.Trips.Register
             }
 
             return new ResponseShortTripJson
-            {
-                Id = trip.Id,
+            {               
                 Name = trip.Name,
                 StartDate = trip.StartDate,
-                EndDate = trip.EndDate
+                EndDate = trip.EndDate,
+                Id = trip.Id
             };
         }
 
