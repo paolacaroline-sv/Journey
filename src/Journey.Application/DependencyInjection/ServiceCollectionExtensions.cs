@@ -1,4 +1,5 @@
 using Journey.Application.UseCases.Trips.GetAll;
+using Journey.Application.UseCases.Trips.GetById;
 using Journey.Application.UseCases.Trips.Register;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +11,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<RegisterTripUseCase>();
         services.AddScoped<GetAllTripsUseCase>();
+        services.AddScoped<GetById>();
 
         return services;
     }
