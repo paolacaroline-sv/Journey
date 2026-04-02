@@ -42,19 +42,8 @@ namespace Journey.Api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult Register([FromBody] RequestRegisterTripJson request)
         {
-            try
-            {   
-                var response = _registerTripUseCase.Execute(request);
-                return Created(string.Empty, response);
-            }
-            catch (JourneyException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch
-            {                
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
-            }
+            var response = _registerTripUseCase.Execute(request);
+            return Created(string.Empty, response);
         }
 
     }

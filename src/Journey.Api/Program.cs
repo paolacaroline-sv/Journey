@@ -1,3 +1,4 @@
+using Journey.Api.Filters;
 using Journey.Application.DependencyInjection;
 using Journey.Infrastructure.DependencyInjection;
 
@@ -9,6 +10,11 @@ builder.Services.AddApplication();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddMvc(options =>
+{
+    options.Filters.Add<ExceptionFilter>();
+});
 
 var app = builder.Build();
 

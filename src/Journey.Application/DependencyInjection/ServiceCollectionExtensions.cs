@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<RegisterTripUseCase>();
         services.AddScoped<GetAllTripsUseCase>();
         services.AddScoped<GetTripByIdUseCase>();
-
+        
         return services;
     }
 }

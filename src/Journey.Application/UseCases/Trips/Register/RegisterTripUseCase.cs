@@ -4,6 +4,7 @@ using Journey.Communication.Responses;
 using Journey.Exception.ExceptionBase;
 using Journey.Infrastructure;
 using Journey.Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Journey.Application.UseCases.Trips.Register
@@ -18,7 +19,7 @@ namespace Journey.Application.UseCases.Trips.Register
             _dbContext = dbContext;
             _logger = logger;
         }
-        
+
         public ResponseShortTripJson Execute(RequestRegisterTripJson request)
         {
             Validate(request);
@@ -34,17 +35,15 @@ namespace Journey.Application.UseCases.Trips.Register
             {
                 _dbContext.Trips.Add(trip);
                 _dbContext.SaveChanges();
-                _logger.LogInformation("Trip saved successfully with ID: {TripId}", trip.Id);
-
             }
             catch (DbException ex)
             {
                 _logger.LogError(ex, "Error occurred while saving the trip to the database.");
-                throw new JourneyException("An error occurred while registering the trip. Please try again later.");
+                throw;
             }
 
             return new ResponseShortTripJson
-            {               
+            {
                 Name = trip.Name,
                 StartDate = trip.StartDate,
                 EndDate = trip.EndDate,
@@ -58,21 +57,21 @@ namespace Journey.Application.UseCases.Trips.Register
             var todayUtc = DateTime.UtcNow.Date;
             var startDate = request.StartDate.Date;
             var endDate = request.EndDate.Date;
-           
+
             if (string.IsNullOrWhiteSpace(request.Name))
-                throw new JourneyException("Name is required.");
+                throw new ErrorOnValidationException("Name is required.");
 
             if (request.StartDate == default)
-                throw new JourneyException("Start date is required.");
+                throw new ErrorOnValidationException("Start date is required.");
 
             if (request.EndDate == default)
-                throw new JourneyException("End date is required.");
+                throw new ErrorOnValidationException("End date is required.");
 
             if (startDate < todayUtc)
-                throw new JourneyException("Start date cannot be in the past.");
+                throw new ErrorOnValidationException("Start date cannot be in the past.");
 
             if (endDate < startDate)
-                throw new JourneyException("End date cannot be before start date.");
+                throw new ErrorOnValidationException("End date cannot be before start date.");
         }
     }
 }

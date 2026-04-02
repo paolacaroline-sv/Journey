@@ -1,4 +1,5 @@
 using Journey.Communication.Responses;
+using Journey.Exception.ExceptionBase;
 using Journey.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +25,7 @@ namespace Journey.Application.UseCases.Trips.GetTripById
             if (trip == null)
             {
                 _logger.LogWarning("Trip with ID {Id} not found.", id);
-                return null!; 
+                throw new NotFoundException($"Trip with ID {id} not found.");
             }
 
             _logger.LogInformation("Retrieved trip with ID {Id} from the database.", id);
