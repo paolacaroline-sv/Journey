@@ -5,6 +5,7 @@ using Journey.Application.UseCases.Trips.Register;
 using Journey.Exception.ExceptionBase;
 using Journey.Application.UseCases.Trips.GetAll;
 using Journey.Application.UseCases.Trips.GetTripById;
+using Journey.Application.UseCases.Trips.Delete;
 
 namespace Journey.Api.Controllers
 {
@@ -15,12 +16,14 @@ namespace Journey.Api.Controllers
         private readonly GetAllTripsUseCase _getAllTripsUseCase;
         private readonly GetTripByIdUseCase _getTripByIdUseCase;
         private readonly RegisterTripUseCase _registerTripUseCase;
+        private readonly DeleteTripByIdUseCase _deleteTripByIdUseCase;
 
-        public TripsController(GetAllTripsUseCase getAllTripsUseCase, GetTripByIdUseCase getTripByIdUseCase, RegisterTripUseCase registerTripUseCase)
+        public TripsController(GetAllTripsUseCase getAllTripsUseCase, GetTripByIdUseCase getTripByIdUseCase, RegisterTripUseCase registerTripUseCase, DeleteTripByIdUseCase deleteTripByIdUseCase)
         {
             _getAllTripsUseCase = getAllTripsUseCase;
             _getTripByIdUseCase = getTripByIdUseCase;
             _registerTripUseCase = registerTripUseCase;
+            _deleteTripByIdUseCase = deleteTripByIdUseCase;
         }
 
         [HttpGet]
@@ -31,7 +34,7 @@ namespace Journey.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ResponseTripJson), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseTripJson), StatusCodes.Status200OK)]        
         public IActionResult GetById([FromRoute] Guid id)
         {
             return Ok(_getTripByIdUseCase.Execute(id));
@@ -44,6 +47,14 @@ namespace Journey.Api.Controllers
         {
             var response = _registerTripUseCase.Execute(request);
             return Created(string.Empty, response);
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult Delete([FromRoute] Guid id)
+        {
+            _deleteTripByIdUseCase.Execute(id);
+            return NoContent();
         }
 
     }
