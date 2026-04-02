@@ -29,7 +29,7 @@ namespace Journey.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public IActionResult GetById([FromRoute] Guid id)
         {
             return Ok(_getTripByIdUseCase.Execute(id));
         }

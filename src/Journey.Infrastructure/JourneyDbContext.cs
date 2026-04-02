@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Journey.Infrastructure.Entities;
 
 namespace Journey.Infrastructure
 {
@@ -8,6 +9,12 @@ namespace Journey.Infrastructure
         {
         }
 
-        public DbSet<Entities.Trip> Trips { get; set; }
+        public DbSet<Trip> Trips { get; set; }
+        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Activity>().ToTable("Activities");
+        }
     }
 }
