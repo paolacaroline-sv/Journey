@@ -1,4 +1,5 @@
 using System.Data.Common;
+using FluentValidation;
 using Journey.Communication.Requests;
 using Journey.Communication.Responses;
 using Journey.Exception.ExceptionBase;
@@ -22,8 +23,9 @@ namespace Journey.Application.UseCases.Trips.Register
 
         public ResponseShortTripJson Execute(RequestRegisterTripJson request)
         {
+            _logger.LogInformation("Starting trip registration process for trip: {TripName}", request.Name);
             Validate(request);
-
+            _logger.LogInformation("Validation successful for trip: {TripName}", request.Name);
             var trip = new Trip
             {
                 Name = request.Name,
@@ -31,17 +33,19 @@ namespace Journey.Application.UseCases.Trips.Register
                 EndDate = request.EndDate
             };
 
+            _logger.LogInformation("Attempting to save trip: {TripName} to the database", request.Name);
             try
             {
                 _dbContext.Trips.Add(trip);
                 _dbContext.SaveChanges();
+                _logger.LogInformation("Trip: {TripName} successfully saved to the database with ID: {TripId}", trip.Name, trip.Id);
             }
             catch (DbException ex)
             {
                 _logger.LogError(ex, "Error occurred while saving the trip to the database.");
                 throw;
             }
-
+            _logger.LogInformation("Trip registration process completed for trip: {TripName}", request.Name);
             return new ResponseShortTripJson
             {
                 Name = trip.Name,
@@ -53,25 +57,15 @@ namespace Journey.Application.UseCases.Trips.Register
 
         private void Validate(RequestRegisterTripJson request)
         {
-            ArgumentNullException.ThrowIfNull(request);
-            var todayUtc = DateTime.UtcNow.Date;
-            var startDate = request.StartDate.Date;
-            var endDate = request.EndDate.Date;
+            var validator = new RegisterTripValidator();
+            var validationResult = validator.Validate(request);
 
-            if (string.IsNullOrWhiteSpace(request.Name))
-                throw new ErrorOnValidationException("Name is required.");
-
-            if (request.StartDate == default)
-                throw new ErrorOnValidationException("Start date is required.");
-
-            if (request.EndDate == default)
-                throw new ErrorOnValidationException("End date is required.");
-
-            if (startDate < todayUtc)
-                throw new ErrorOnValidationException("Start date cannot be in the past.");
-
-            if (endDate < startDate)
-                throw new ErrorOnValidationException("End date cannot be before start date.");
+            if (!validationResult.IsValid)
+            {
+                _logger.LogWarning("Validation failed for trip: {TripName}. Errors: {Errors}", request.Name, validationResult.Errors);
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                throw new ErrorOnValidationException(errors);
+            }    
         }
     }
 }
