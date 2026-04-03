@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Journey.Exception.ExceptionBase;
 using Journey.Infrastructure;
+using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 
 namespace Journey.Application.UseCases.Trips.Delete

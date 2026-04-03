@@ -1,7 +1,9 @@
+using Journey.Application.UseCases.Activity.Register;
 using Journey.Application.UseCases.Trips.Delete;
 using Journey.Application.UseCases.Trips.GetAll;
 using Journey.Application.UseCases.Trips.GetTripById;
 using Journey.Application.UseCases.Trips.Register;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Journey.Application.DependencyInjection;
 
@@ -13,6 +15,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<GetAllTripsUseCase>();
         services.AddScoped<GetTripByIdUseCase>();
         services.AddScoped<DeleteTripByIdUseCase>();
+        services.AddScoped<RegisterActivityForTripUseCase>();
         
         return services;
     }

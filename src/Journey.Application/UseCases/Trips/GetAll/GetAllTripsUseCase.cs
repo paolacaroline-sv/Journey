@@ -1,5 +1,6 @@
 using Journey.Communication.Responses;
 using Journey.Infrastructure;
+using Microsoft.Extensions.Logging;
 
 namespace Journey.Application.UseCases.Trips.GetAll
 {
