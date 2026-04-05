@@ -19,19 +19,18 @@ namespace Journey.Application.UseCases.Activity.Register
 
         public ResponseActivityJson Execute(Guid tripId, RequestRegisterActivityJson request)
         {
-            var trip = _dbContext.Trips.Include(t => t.Activities).FirstOrDefault(t => t.Id == tripId) ?? throw new NotFoundException($"Trip with ID {tripId} not found.");
+            var trip = _dbContext.Trips.FirstOrDefault(t => t.Id == tripId) ?? throw new NotFoundException($"Trip with ID {tripId} not found.");
             Validate(trip, request);
 
             var activity = new Infrastructure.Entities.Activity 
             {
                 Name = request.Name,
-                Date = request.Date
+                Date = request.Date,
+                TripId = tripId
             };
 
-            trip.Activities.Add(activity);
-            _dbContext.Trips.Update(trip);
-            _dbContext.SaveChanges();
-            
+            _dbContext.Activities.Add(activity);
+            _dbContext.SaveChanges();            
             
             return new ResponseActivityJson
             {
@@ -47,7 +46,11 @@ namespace Journey.Application.UseCases.Activity.Register
             var validator = new RegisterActivityForTripValidator();
             var result = validator.Validate(request);
 
-            if (request.Date >= trip.StartDate && request.Date <= trip.EndDate)
+            var activityDate = request.Date.Date;
+            var tripStartDate = trip.StartDate.Date;
+            var tripEndDate = trip.EndDate.Date;
+
+            if (activityDate < tripStartDate || activityDate > tripEndDate)
             {
                 result.Errors.Add(new ValidationFailure(nameof(request.Date), "The activity date must be within the trip's start and end dates."));
             }

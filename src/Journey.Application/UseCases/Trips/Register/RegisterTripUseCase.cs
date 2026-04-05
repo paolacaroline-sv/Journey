@@ -55,13 +55,14 @@ namespace Journey.Application.UseCases.Trips.Register
 
         private void Validate(RequestRegisterTripJson request)
         {
-            ArgumentNullException.ThrowIfNull(request);
-            var todayUtc = DateTime.UtcNow.Date;
-            var startDate = request.StartDate.Date;
-            var endDate = request.EndDate.Date;
-
             var validator = new RegisterTripValidator();
-            validator.ValidateAndThrow(request);
+            var result = validator.Validate(request);
+
+            if (!result.IsValid)
+            {
+                var errors = result.Errors.Select(e => e.ErrorMessage).ToList();
+                throw new ErrorOnValidationException(errors);
+            }
         }
     }
 }

@@ -25,8 +25,8 @@ namespace Journey.Api.Filters
             else
             {
                 context.HttpContext.Response.StatusCode = 500;
-
-                var responseJson = new ResponseErrorsJson(new List<string> { "An unexpected error occurred." });               
+                
+                var responseJson = new ResponseErrorsJson(["An unexpected error occurred."]);               
                 context.Result = new ObjectResult(responseJson);
             }
         }
