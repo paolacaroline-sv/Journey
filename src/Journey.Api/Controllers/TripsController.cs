@@ -7,6 +7,8 @@ using Journey.Application.UseCases.Trips.GetAll;
 using Journey.Application.UseCases.Trips.GetTripById;
 using Journey.Application.UseCases.Trips.Delete;
 using Journey.Application.UseCases.Activity.Register;
+using Journey.Application.UseCases.Activity.Complete;
+using Journey.Application.UseCases.Activity.Delete;
 
 
 
@@ -21,8 +23,10 @@ namespace Journey.Api.Controllers
         private readonly RegisterTripUseCase _registerTripUseCase;
         private readonly DeleteTripByIdUseCase _deleteTripByIdUseCase;
         private readonly RegisterActivityForTripUseCase _registerActivityForTripUseCase;
+        private readonly CompleteActivityForTripUseCase _completeActivityForTripUseCase;
+        private readonly DeleteActivityForTripUseCase _deleteActivityForTripUseCase;
 
-        public TripsController(GetAllTripsUseCase getAllTripsUseCase, GetTripByIdUseCase getTripByIdUseCase, RegisterTripUseCase registerTripUseCase, DeleteTripByIdUseCase deleteTripByIdUseCase, RegisterActivityForTripUseCase registerActivityForTripUseCase)
+        public TripsController(GetAllTripsUseCase getAllTripsUseCase, GetTripByIdUseCase getTripByIdUseCase, RegisterTripUseCase registerTripUseCase, DeleteTripByIdUseCase deleteTripByIdUseCase, RegisterActivityForTripUseCase registerActivityForTripUseCase, CompleteActivityForTripUseCase completeActivityForTripUseCase, DeleteActivityForTripUseCase deleteActivityForTripUseCase)
         {
             _getAllTripsUseCase = getAllTripsUseCase;
             _getTripByIdUseCase = getTripByIdUseCase;
@@ -30,6 +34,8 @@ namespace Journey.Api.Controllers
             _deleteTripByIdUseCase = deleteTripByIdUseCase;
 
             _registerActivityForTripUseCase = registerActivityForTripUseCase;
+            _completeActivityForTripUseCase = completeActivityForTripUseCase;
+            _deleteActivityForTripUseCase = deleteActivityForTripUseCase;
         }
 
         [HttpGet]
@@ -76,5 +82,24 @@ namespace Journey.Api.Controllers
             return Created(string.Empty, response);
         }
 
+        [HttpPut]
+        [Route("{tripId}/activity/{activityId}/complete")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ResponseErrorsJson), StatusCodes.Status404NotFound)]
+        public IActionResult CompleteActivity([FromRoute] Guid tripId, [FromRoute] Guid activityId)
+        {            
+            _completeActivityForTripUseCase.Execute(tripId, activityId);
+            return NoContent();
+        }
+
+        [HttpDelete]
+        [Route("{tripId}/activity/{activityId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ResponseErrorsJson), StatusCodes.Status404NotFound)]
+        public IActionResult DeleteActivity([FromRoute] Guid tripId, [FromRoute] Guid activityId)
+        {            
+            _deleteActivityForTripUseCase.Execute(tripId, activityId);
+            return NoContent();
+        }
     }
 }

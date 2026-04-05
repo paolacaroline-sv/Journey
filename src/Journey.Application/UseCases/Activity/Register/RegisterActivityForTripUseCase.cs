@@ -52,7 +52,7 @@ namespace Journey.Application.UseCases.Activity.Register
 
             if (activityDate < tripStartDate || activityDate > tripEndDate)
             {
-                result.Errors.Add(new ValidationFailure(nameof(request.Date), "The activity date must be within the trip's start and end dates."));
+                result.Errors.Add(new ValidationFailure("Date", "The activity date must be within the trip's start and end dates."));
             }
 
             if (!result.IsValid)
