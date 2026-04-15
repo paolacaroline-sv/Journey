@@ -1,6 +1,7 @@
 using AutoMapper;
 using Journey.Communication.Responses;
 using Journey.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Journey.Application.UseCases.Trips.GetAll
@@ -17,9 +18,9 @@ namespace Journey.Application.UseCases.Trips.GetAll
             _mapper = mapper;
         }
 
-        public ResponseTripsJson Execute()
+        public async Task<ResponseTripsJson> Execute()
         {
-            var trips = _dbContext.Trips.ToList();
+            var trips = await _dbContext.Trips.ToListAsync();
 
             _logger.LogInformation("Retrieved {Count} trips from the database.", trips.Count);
 

@@ -12,7 +12,7 @@ namespace Journey.Application.UseCases.Activity.Complete
             _dbContext = dbContext;
         }
 
-        public void Execute(Guid tripId, Guid activityId)
+        public async Task Execute(Guid tripId, Guid activityId)
         {
             var activity = _dbContext
                 .Activities
@@ -25,7 +25,7 @@ namespace Journey.Application.UseCases.Activity.Complete
             }
             
             activity.Status = ActivityStatus.Done;
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             
         }
     }

@@ -14,7 +14,7 @@ namespace Journey.Application.UseCases.Activity.Delete
         {
             _dbContext = dbContext;
         }
-        public void Execute(Guid tripId, Guid activityId)
+        public async Task Execute(Guid tripId, Guid activityId)
         {
             var activity = _dbContext
                 .Activities
@@ -22,7 +22,7 @@ namespace Journey.Application.UseCases.Activity.Delete
                 ?? throw new NotFoundException($"Activity with ID {activityId} not found for Trip with ID {tripId}.");
 
             _dbContext.Activities.Remove(activity);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
     }

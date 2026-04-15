@@ -25,7 +25,7 @@ namespace Journey.Application.UseCases.Trips.Register
             _mapper = mapper;
         }
 
-        public ResponseShortTripJson Execute(RequestRegisterTripJson request)
+        public async Task<ResponseShortTripJson> Execute(RequestRegisterTripJson request)
         {
             Validate(request);
 
@@ -34,7 +34,12 @@ namespace Journey.Application.UseCases.Trips.Register
             try
             {
                 _dbContext.Trips.Add(trip);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                _logger.LogError("A database update error occurred while saving the trip.");
+                throw;
             }
             catch (DbException ex)
             {

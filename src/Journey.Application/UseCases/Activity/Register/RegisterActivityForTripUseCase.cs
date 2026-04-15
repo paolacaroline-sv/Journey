@@ -20,16 +20,16 @@ namespace Journey.Application.UseCases.Activity.Register
             _mapper = mapper;
         }
 
-        public ResponseActivityJson Execute(Guid tripId, RequestRegisterActivityJson request)
+        public async Task<ResponseActivityJson> Execute(Guid tripId, RequestRegisterActivityJson request)
         {
-            var trip = _dbContext.Trips.FirstOrDefault(t => t.Id == tripId) ?? throw new NotFoundException($"Trip with ID {tripId} not found.");
+            var trip = await _dbContext.Trips.FirstOrDefaultAsync(t => t.Id == tripId) ?? throw new NotFoundException($"Trip with ID {tripId} not found.");
             Validate(trip, request);
 
             var activity = _mapper.Map<Infrastructure.Entities.Activity>(request);
             activity.TripId = tripId;            
 
             _dbContext.Activities.Add(activity);
-            _dbContext.SaveChanges();            
+            await _dbContext.SaveChangesAsync();            
             
             return _mapper.Map<ResponseActivityJson>(activity);
         }
@@ -37,7 +37,7 @@ namespace Journey.Application.UseCases.Activity.Register
         private void Validate(Trip trip, RequestRegisterActivityJson request)
         {
             var validator = new RegisterActivityForTripValidator();
-            var result = validator.Validate(request);
+            var result =  validator.Validate(request);
 
             var activityDate = request.Date.Date;
             var tripStartDate = trip.StartDate.Date;

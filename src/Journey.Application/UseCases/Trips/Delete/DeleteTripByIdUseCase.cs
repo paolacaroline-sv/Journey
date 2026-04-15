@@ -19,17 +19,17 @@ namespace Journey.Application.UseCases.Trips.Delete
             _logger = logger;
         }
 
-        public void Execute(Guid id)
+        public async Task Execute(Guid id)
         {
-            var trip = _dbContext.Trips
+            var trip = await _dbContext.Trips
             .Include(trip => trip.Activities)
-            .FirstOrDefault(trip => trip.Id == id);
+            .FirstOrDefaultAsync(trip => trip.Id == id);
 
             if (trip == null)            
                 throw new NotFoundException($"Trip with ID {id} not found.");            
 
             _dbContext.Trips.Remove(trip);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             _logger.LogInformation("Deleted trip with ID {Id} from the database.", id);
             
         }        

@@ -41,34 +41,34 @@ namespace Journey.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(ResponseTripsJson), StatusCodes.Status200OK)]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_getAllTripsUseCase.Execute());
+            return Ok(await _getAllTripsUseCase.Execute());
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ResponseTripJson), StatusCodes.Status200OK)]   
         [ProducesResponseType(typeof(ResponseErrorsJson), StatusCodes.Status404NotFound)]
-        public IActionResult GetById([FromRoute] Guid id)
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-            return Ok(_getTripByIdUseCase.Execute(id));
+            return Ok(await _getTripByIdUseCase.Execute(id));
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(ResponseShortTripJson), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResponseErrorsJson), StatusCodes.Status400BadRequest)]
-        public IActionResult Register([FromBody] RequestRegisterTripJson request)
+        public async Task<IActionResult> Register([FromBody] RequestRegisterTripJson request)
         {
-            var response = _registerTripUseCase.Execute(request);
+            var response = await _registerTripUseCase.Execute(request);
             return Created(string.Empty, response);
         }
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ResponseErrorsJson), StatusCodes.Status404NotFound)]
-        public IActionResult Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            _deleteTripByIdUseCase.Execute(id);
+            await _deleteTripByIdUseCase.Execute(id);
             return NoContent();
         }
 
@@ -77,9 +77,9 @@ namespace Journey.Api.Controllers
         [ProducesResponseType(typeof(ResponseShortTripJson), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResponseErrorsJson), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseErrorsJson), StatusCodes.Status404NotFound)]
-        public IActionResult RegisterActivity([FromRoute] Guid tripId, [FromBody] RequestRegisterActivityJson request)
+        public async Task<IActionResult> RegisterActivity([FromRoute] Guid tripId, [FromBody] RequestRegisterActivityJson request)
         {            
-            var response = _registerActivityForTripUseCase.Execute(tripId, request);
+            var response = await _registerActivityForTripUseCase.Execute(tripId, request);
             return Created(string.Empty, response);
         }
 
@@ -87,9 +87,9 @@ namespace Journey.Api.Controllers
         [Route("{tripId}/activity/{activityId}/complete")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ResponseErrorsJson), StatusCodes.Status404NotFound)]
-        public IActionResult CompleteActivity([FromRoute] Guid tripId, [FromRoute] Guid activityId)
+        public async Task<IActionResult> CompleteActivity([FromRoute] Guid tripId, [FromRoute] Guid activityId)
         {            
-            _completeActivityForTripUseCase.Execute(tripId, activityId);
+            await _completeActivityForTripUseCase.Execute(tripId, activityId);
             return NoContent();
         }
 
@@ -97,9 +97,9 @@ namespace Journey.Api.Controllers
         [Route("{tripId}/activity/{activityId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ResponseErrorsJson), StatusCodes.Status404NotFound)]
-        public IActionResult DeleteActivity([FromRoute] Guid tripId, [FromRoute] Guid activityId)
+        public async Task<IActionResult> DeleteActivity([FromRoute] Guid tripId, [FromRoute] Guid activityId)
         {            
-            _deleteActivityForTripUseCase.Execute(tripId, activityId);
+            await _deleteActivityForTripUseCase.Execute(tripId, activityId);
             return NoContent();
         }
     }

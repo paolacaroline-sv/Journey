@@ -21,11 +21,11 @@ namespace Journey.Application.UseCases.Trips.GetTripById
 
         }
 
-        public ResponseTripJson Execute(Guid id)
+        public async Task<ResponseTripJson> Execute(Guid id)
         {
-            var trip = _dbContext.Trips
+            var trip = await _dbContext.Trips
             .Include(trip => trip.Activities)
-            .FirstOrDefault(trip => trip.Id == id);
+            .FirstOrDefaultAsync(trip => trip.Id == id);
 
             if (trip == null)
             {
