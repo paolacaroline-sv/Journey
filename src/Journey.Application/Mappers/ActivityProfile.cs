@@ -12,8 +12,12 @@ public class ActivityProfile : Profile
 {
     public ActivityProfile()
     {
-        CreateMap<ActivityStatusInfra, ActivityStatusComm>();
-        CreateMap<Activity, ResponseActivityJson>();
+        CreateMap<Activity, ResponseActivityJson>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
         CreateMap<RequestRegisterActivityJson, Activity>();
+        CreateMap<ActivityStatusInfra, ActivityStatusComm>();
     }
 }

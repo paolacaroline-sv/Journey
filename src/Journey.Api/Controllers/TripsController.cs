@@ -22,6 +22,7 @@ namespace Journey.Api.Controllers
         private readonly GetTripByIdUseCase _getTripByIdUseCase;
         private readonly RegisterTripUseCase _registerTripUseCase;
         private readonly DeleteTripByIdUseCase _deleteTripByIdUseCase;
+
         private readonly RegisterActivityForTripUseCase _registerActivityForTripUseCase;
         private readonly CompleteActivityForTripUseCase _completeActivityForTripUseCase;
         private readonly DeleteActivityForTripUseCase _deleteActivityForTripUseCase;

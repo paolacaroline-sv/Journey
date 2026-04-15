@@ -13,7 +13,8 @@ public class TripProfile : Profile
             .ForMember(dest => dest.Trips, opt => opt.MapFrom(src => src));
 
         CreateMap<Trip, ResponseShortTripJson>();
-        CreateMap<Trip, ResponseTripJson>();
+        CreateMap<Trip, ResponseTripJson>()
+            .ForMember(dest => dest.Activities, opt => opt.MapFrom(src => src.Activities));
         CreateMap<RequestRegisterTripJson, Trip>();
     }
 }

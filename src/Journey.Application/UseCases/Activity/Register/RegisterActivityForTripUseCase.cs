@@ -5,6 +5,7 @@ using Journey.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation.Results;
 using Journey.Communication.Responses;
+using AutoMapper;
 
 
 namespace Journey.Application.UseCases.Activity.Register
@@ -12,9 +13,11 @@ namespace Journey.Application.UseCases.Activity.Register
     public class RegisterActivityForTripUseCase
     {
         private readonly JourneyDbContext _dbContext;
-        public RegisterActivityForTripUseCase(JourneyDbContext dbContext)
+        private readonly IMapper _mapper;
+        public RegisterActivityForTripUseCase(JourneyDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         public ResponseActivityJson Execute(Guid tripId, RequestRegisterActivityJson request)
@@ -22,23 +25,13 @@ namespace Journey.Application.UseCases.Activity.Register
             var trip = _dbContext.Trips.FirstOrDefault(t => t.Id == tripId) ?? throw new NotFoundException($"Trip with ID {tripId} not found.");
             Validate(trip, request);
 
-            var activity = new Infrastructure.Entities.Activity 
-            {
-                Name = request.Name,
-                Date = request.Date,
-                TripId = tripId
-            };
+            var activity = _mapper.Map<Infrastructure.Entities.Activity>(request);
+            activity.TripId = tripId;            
 
             _dbContext.Activities.Add(activity);
             _dbContext.SaveChanges();            
             
-            return new ResponseActivityJson
-            {
-                Id = activity.Id,
-                Name = activity.Name,
-                Date = activity.Date,
-                Status = (Communication.Enums.ActivityStatus)activity.Status
-            };
+            return _mapper.Map<ResponseActivityJson>(activity);
         }
         
         private void Validate(Trip trip, RequestRegisterActivityJson request)
