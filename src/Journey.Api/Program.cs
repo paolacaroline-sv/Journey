@@ -18,11 +18,16 @@ builder.Services.AddMvc(options =>
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI(c => {    
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Journey API V1");
-    c.RoutePrefix = string.Empty; 
-});
+if (app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/error");
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Journey API V1");
+        c.RoutePrefix = string.Empty;
+    });
+}
 
 
 app.MapControllers();

@@ -3,6 +3,7 @@ using Journey.Exception.ExceptionBase;
 using Journey.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace Journey.Application.UseCases.Trips.GetTripById
 {
@@ -11,10 +12,13 @@ namespace Journey.Application.UseCases.Trips.GetTripById
     {
         private readonly JourneyDbContext _dbContext;
         private readonly ILogger<GetTripByIdUseCase> _logger;
-        public GetTripByIdUseCase(JourneyDbContext dbContext, ILogger<GetTripByIdUseCase> logger)
+        private readonly IMapper _mapper;
+        public GetTripByIdUseCase(JourneyDbContext dbContext, ILogger<GetTripByIdUseCase> logger, IMapper mapper)
         {
             _dbContext = dbContext;
             _logger = logger;
+            _mapper = mapper;
+
         }
 
         public ResponseTripJson Execute(Guid id)
@@ -31,20 +35,8 @@ namespace Journey.Application.UseCases.Trips.GetTripById
 
             _logger.LogInformation("Retrieved trip with ID {Id} from the database.", id);
 
-            return new ResponseTripJson
-            {
-                Id = trip.Id,
-                Name = trip.Name,
-                StartDate = trip.StartDate,
-                EndDate = trip.EndDate,
-                Activities = trip.Activities.Select(activity => new ResponseActivityJson
-                {
-                    Id = activity.Id,
-                    Name = activity.Name,                                      
-                    Date = activity.Date,
-                    Status = (Communication.Enums.ActivityStatus)activity.Status
-                }).ToList()
-            };
+            return _mapper.Map<ResponseTripJson>(trip);
+
         }
 
     }
